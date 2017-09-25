@@ -4,11 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MessageReader extends Thread {
+public class MessageReader {
 
     private BufferedReader reader;
     private Consumer<String> onMessage;
@@ -19,8 +20,16 @@ public class MessageReader extends Thread {
         reader = new BufferedReader(new InputStreamReader(inputStream));
     }
 
-    @Override
-    public void run() {
+    public MessageReader(Socket socket, Consumer<String> onMessage) {
+        this.onMessage = onMessage;
+        try {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Creating input stream failed - " + ex.getMessage());
+        }
+    }
+
+    public void read() {
         String message;
         try {
             while ((message = reader.readLine()) != null) {

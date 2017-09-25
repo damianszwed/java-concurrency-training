@@ -5,6 +5,9 @@ import java.net.Socket;
 
 public class ChatClient {
 
+    private static final int SERVER_PORT = 1234;
+    private static final String SERVER_HOST = "localhost";
+
     private MessageWriter messageWriter;
     private Socket socket;
     private String user;
@@ -16,16 +19,15 @@ public class ChatClient {
     }
 
     public void start() throws IOException {
-        MessageReader serverMessageReader = new MessageReader(socket.getInputStream(), System.out::println);
-        serverMessageReader.start();
+        new Thread(() -> new MessageReader(socket, System.out::println).read()).start();
 
-        MessageReader consoleMessageReader = new MessageReader(System.in, message -> messageWriter.write(user + ": " + message));
+        Thread consoleMessageReader = new Thread(() -> new MessageReader(System.in, message -> messageWriter.write(user + ": " + message)));
         consoleMessageReader.setDaemon(true);
         consoleMessageReader.start();
     }
 
     public static void main(String[] args) throws IOException {
-        new ChatClient("localhost", 1234, "Tomek").start();
+        new ChatClient(SERVER_HOST, SERVER_PORT, "Tomek").start();
     }
 
 }

@@ -21,6 +21,7 @@ public class ChatClient {
     }
 
     public void start() throws IOException {
+        Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler());
         new Thread(readFromSocket).start();
         Thread consoleMessageReader = new Thread(readFromConsole);
         consoleMessageReader.setDaemon(true);

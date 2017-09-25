@@ -2,6 +2,7 @@ package pl.training.concurrency.chat.v1;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.function.Consumer;
 
 public class ChatClient {
 
@@ -9,19 +10,38 @@ public class ChatClient {
     private static final String SERVER_HOST = "localhost";
 
     private MessageWriter messageWriter;
-    private Socket socket;
     private String user;
+    private Consumer<String> onMessage = message -> messageWriter.write(user + ": " + message);
+    private Runnable readFromSocket;
+    private Runnable readFromConsole = () -> new MessageReader(System.in, onMessage);
 
     public ChatClient(String host, int port, String user) throws IOException {
-        socket = new Socket(host, port);
+        Socket socket = new Socket(host, port);
         messageWriter = new MessageWriter(socket);
+        readFromSocket = () -> new MessageReader(socket, System.out::println).read();
         this.user = user;
     }
 
     public void start() throws IOException {
-        new Thread(() -> new MessageReader(socket, System.out::println).read()).start();
+        new Thread(readFromSocket).start();
 
-        Thread consoleMessageReader = new Thread(() -> new MessageReader(System.in, message -> messageWriter.write(user + ": " + message)));
+        /*Thread consoleMessageReader = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                new MessageReader(System.in, new Consumer<String>() {
+
+                    @Override
+                    public void accept(String message) {
+                        messageWriter.write(user + ": " + message);
+                    }
+
+                });
+            }
+
+        });*/
+
+        Thread consoleMessageReader = new Thread(readFromConsole);
         consoleMessageReader.setDaemon(true);
         consoleMessageReader.start();
     }

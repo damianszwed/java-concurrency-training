@@ -33,6 +33,7 @@ public class MessageReader {
         String message;
         try {
             while ((message = reader.readLine()) != null) {
+                System.out.println(message);
                 onMessage.accept(message);
             }
         } catch (IOException ex) {

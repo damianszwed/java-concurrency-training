@@ -1,0 +1,34 @@
+package pl.training.concurrency.chat.v1;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class MessageReader extends Thread {
+
+    private BufferedReader reader;
+    private Consumer<String> onMessage;
+    private Logger logger = Logger.getLogger(getClass().getName());
+
+    public MessageReader(InputStream inputStream, Consumer<String> onMessage) {
+        this.onMessage = onMessage;
+        reader = new BufferedReader(new InputStreamReader(inputStream));
+    }
+
+    @Override
+    public void run() {
+        String message;
+        try {
+            while ((message = reader.readLine()) != null) {
+                onMessage.accept(message);
+            }
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Read message failed - " + ex.getMessage());
+        }
+    }
+
+}

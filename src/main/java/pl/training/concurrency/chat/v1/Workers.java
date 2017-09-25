@@ -15,4 +15,8 @@ public class Workers {
         workers.forEach(worker -> worker.send(message));
     }
 
+    public synchronized void remove(ConnectionWorker worker) {
+        workers.remove(worker);
+    }
+
 }

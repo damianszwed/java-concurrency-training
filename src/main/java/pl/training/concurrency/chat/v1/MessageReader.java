@@ -13,6 +13,7 @@ public class MessageReader {
 
     private BufferedReader reader;
     private Consumer<String> onMessage;
+    private Runnable onClose;
     private Logger logger = Logger.getLogger(getClass().getName());
 
     public MessageReader(InputStream inputStream, Consumer<String> onMessage) {
@@ -20,8 +21,9 @@ public class MessageReader {
         reader = new BufferedReader(new InputStreamReader(inputStream));
     }
 
-    public MessageReader(Socket socket, Consumer<String> onMessage) {
+    public MessageReader(Socket socket, Consumer<String> onMessage, Runnable onClose) {
         this.onMessage = onMessage;
+        this.onClose = onClose;
         try {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException ex) {
@@ -33,11 +35,12 @@ public class MessageReader {
         String message;
         try {
             while ((message = reader.readLine()) != null) {
-                System.out.println(message);
                 onMessage.accept(message);
             }
+            onClose.run();
         } catch (IOException ex) {
             logger.log(Level.SEVERE, "Read message failed - " + ex.getMessage());
+            onClose.run();
         }
     }
 

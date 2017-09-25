@@ -16,7 +16,7 @@ public class ConnectionWorker implements Runnable {
 
     @Override
     public void run() {
-       new MessageReader(socket, message -> workers.broadcast(message)).read();
+       new MessageReader(socket, message -> workers.broadcast(message), () -> workers.remove(this)).read();
     }
 
     public void send(String message) {

@@ -6,13 +6,12 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RemoteClient {
-
+public class Connection {
 
     private PrintWriter writer;
     private Logger logger = Logger.getLogger(getClass().getName());
 
-    public RemoteClient(Socket socket) {
+    public Connection(Socket socket) {
         try {
             writer = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException ex) {

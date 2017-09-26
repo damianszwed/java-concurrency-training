@@ -27,7 +27,7 @@ public class ConcurrentCache<Key, Value> {
     public synchronized Optional<Value> get(Key key) {
         getIndexWithKey(key).incrementAccessCounter();
         Value value = map.get(key);
-        return value != null ? Optional.of(value) : Optional.empty();
+        return value == null ? Optional.empty() : Optional.of(value);
     }
 
     private void ensureCapacity() {

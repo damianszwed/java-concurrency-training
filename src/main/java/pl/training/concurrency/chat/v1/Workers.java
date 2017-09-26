@@ -17,7 +17,6 @@ public class Workers {
 
     public synchronized void remove(ConnectionWorker worker) {
         workers.remove(worker);
-
     }
 
 }

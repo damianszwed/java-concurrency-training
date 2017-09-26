@@ -3,11 +3,20 @@ package pl.training.concurrency.ex009;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public class App {
 
     private static final int WAIT_TIME = 11;
     private static final int THREADS_COUNT = 2;
+
+    private static void printResult(Future<Long> future) {
+        try {
+            System.out.print(future.get() + " ");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    };
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         Callable<Double> power = new Power(2.0, 3.0);
@@ -29,13 +38,7 @@ public class App {
         List<Future<Long>> results = threadPoolExecutor.invokeAll(sumList);
         Runnable resultsChecker = () -> results.stream()
                 .filter(Future::isDone)
-                .forEach(longFuture -> {
-                    try {
-                        System.out.print(longFuture.get() + " ");
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                });
+                .forEach(App::printResult);
         scheduledExecutorService.scheduleAtFixedRate(resultsChecker, 1, 2, TimeUnit.SECONDS);
     }
 

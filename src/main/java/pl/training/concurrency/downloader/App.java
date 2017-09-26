@@ -10,37 +10,35 @@ import java.text.NumberFormat;
 public class App extends JFrame {
 
     private JLabel progressLabel = new JLabel();
-    private JButton stop = new JButton("Stop");
-    private long bytes;
+    private JButton stopButton = new JButton("Stop");
     private NumberFormat numberFormat = NumberFormat.getNumberInstance();
-    private ObservableBytesStream observableBytesStream;
+    private long bytes;
 
     public App() {
-        setBounds(0,0,320,240);
-        add(progressLabel, BorderLayout.NORTH);
-        add(stop, BorderLayout.CENTER);
+        setBounds(0, 0, 320, 240);
+        setLayout(new FlowLayout());
+        add(progressLabel);
+        add(stopButton);
         setLocationRelativeTo(null);
         setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        App app = new App();
-        app.download();
-    }
-
-    private void download() throws IOException, InterruptedException {
+    private void start() throws IOException {
         URL url = new URL("http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-desktop-amd64.iso");
-        FileOutputStream outputStream = new FileOutputStream("./downloads/ubuntu.iso");
-        try (Downloader downloader = new Downloader()) {
-            observableBytesStream = downloader.download(url, outputStream, this::showProgress);
-            stop.addActionListener(e -> observableBytesStream.setClose(true));
-        }
+        FileOutputStream outputStream = new FileOutputStream("./ubuntu.iso");
+        Downloader downloader = new Downloader();
+        Stoppable task = downloader.download(url, outputStream, this::showProgress);
+        stopButton.addActionListener(e -> task.stop());
     }
 
-    private void showProgress(int bytesWrite) {
-        bytes += bytesWrite;
-        progressLabel.setText("Bytes: " + numberFormat.format(bytes));
+    private void showProgress(long savedBytes) {
+        bytes += savedBytes;
+        progressLabel.setText(numberFormat.format(bytes) + "Bytes");
+    }
+
+    public static void main(String[] args) throws IOException {
+        new App().start();
     }
 
 }

@@ -12,7 +12,7 @@ public class ObservableBytesStream implements ObservableOnSubscribe<byte[]> {
 
     private InputStream inputStream;
     private int bufferSize;
-    private boolean close;
+    private boolean stop;
 
     public ObservableBytesStream(URL url, int bufferSize) throws IOException {
         this(url.openConnection().getInputStream(), bufferSize);
@@ -27,14 +27,14 @@ public class ObservableBytesStream implements ObservableOnSubscribe<byte[]> {
     public void subscribe(ObservableEmitter<byte[]> observableEmitter) throws Exception {
         byte[] buffer = new byte[bufferSize];
         int readBytes;
-        while ((readBytes = inputStream.read(buffer)) > 0 && !close) {
+        while ((readBytes = inputStream.read(buffer)) > 0 && !stop) {
             observableEmitter.onNext(Arrays.copyOf(buffer, readBytes));
         }
         observableEmitter.onComplete();
     }
 
-    public void setClose(boolean close) {
-        this.close = close;
+    public void stop() {
+        this.stop = true;
     }
 
 }

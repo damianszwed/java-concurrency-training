@@ -1,28 +1,46 @@
 package pl.training.concurrency.downloader;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.text.NumberFormat;
 
-public class App {
+public class App extends JFrame {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        URL url = new URL("file:C:\\Program Files\\Java\\jdk-9\\bin\\awt.dll");
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
-        Downloader downloader = new Downloader(executorService);
-        FileOutputStream outputStream = new FileOutputStream("./downloads/" + UUID.randomUUID().toString() +".txt");
-        FileOutputStream outputStream2 = new FileOutputStream("./downloads/" + UUID.randomUUID().toString() +".txt");
-        downloader.download(url, outputStream, App::showProgress);
-        downloader.download(url, outputStream2, App::showProgress);
-        Thread.sleep(2_000);
-        executorService.shutdown();
+    private JLabel progressLabel = new JLabel();
+    private JButton stop = new JButton("Stop");
+    private long bytes;
+    private NumberFormat numberFormat = NumberFormat.getNumberInstance();
+    private ObservableBytesStream observableBytesStream;
+
+    public App() {
+        setBounds(0,0,320,240);
+        add(progressLabel, BorderLayout.NORTH);
+        add(stop, BorderLayout.CENTER);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private static void showProgress(int bytesWrited) {
-        System.out.println("Bytes writed: " + bytesWrited);
+    public static void main(String[] args) throws IOException, InterruptedException {
+        App app = new App();
+        app.download();
+    }
+
+    private void download() throws IOException, InterruptedException {
+        URL url = new URL("http://releases.ubuntu.com/16.04.3/ubuntu-16.04.3-desktop-amd64.iso");
+        FileOutputStream outputStream = new FileOutputStream("./downloads/ubuntu.iso");
+        try (Downloader downloader = new Downloader()) {
+            observableBytesStream = downloader.download(url, outputStream, this::showProgress);
+            stop.addActionListener(e -> observableBytesStream.setClose(true));
+        }
+    }
+
+    private void showProgress(int bytesWrite) {
+        bytes += bytesWrite;
+        progressLabel.setText("Bytes: " + numberFormat.format(bytes));
     }
 
 }

@@ -1,15 +1,13 @@
 package pl.training.concurrency.downloader;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 
 public class Downloader {
 
@@ -21,13 +19,14 @@ public class Downloader {
         this.executorService = executorService;
     }
 
-    public void download(URL url) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(UUID.randomUUID().toString() +".txt");
-        ObservableBytesStream observableBytesStream = new ObservableBytesStream(url, BUFFER_SIZE);
-        Observable.create(observableBytesStream)
+    public void download(URL url, OutputStream outputStream,  Consumer<Integer> onProgress) throws IOException {
+        Observable.create(new ObservableBytesStream(url, BUFFER_SIZE))
                 .observeOn(Schedulers.from(executorService))
                 .subscribeOn(Schedulers.from(executorService))
-                .subscribe(fileOutputStream::write);
+                .subscribe(bytes -> {
+                    outputStream.write(bytes);
+                    onProgress.accept(bytes.length);
+                });
     }
 
 }

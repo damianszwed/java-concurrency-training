@@ -32,8 +32,8 @@ public class Index<Key> implements Comparable<Index<Key>> {
 
     @Override
     public int compareTo(Index<Key> otherIndex) {
-        int result = accessCounter.compareTo(otherIndex.getAccessCounter());
-        return result != 0 ? result : created.compareTo(otherIndex.getCreated());
+        int result = otherIndex.getAccessCounter().compareTo(accessCounter);
+        return result != 0 ? result : otherIndex.getCreated().compareTo(created);
     }
 
     @Override
@@ -55,6 +55,15 @@ public class Index<Key> implements Comparable<Index<Key>> {
         result = 31 * result + (created != null ? created.hashCode() : 0);
         result = 31 * result + (key != null ? key.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Index{" +
+                "accessCounter=" + accessCounter +
+                ", created=" + created +
+                ", key=" + key +
+                '}';
     }
 
 }

@@ -20,16 +20,18 @@ public class ConcurrentCache<Key, Value> {
         Index index = getIndexWithKey(key);
         indices.add(index);
         map.put(key, value);
+        System.out.println(indices);
         ensureCapacity();
     }
 
     public synchronized Optional<Value> get(Key key) {
         getIndexWithKey(key).incrementAccessCounter();
-        return Optional.of(map.get(key));
+        Value value = map.get(key);
+        return value != null ? Optional.of(value) : Optional.empty();
     }
 
     private void ensureCapacity() {
-        if (indices.size() > cacheSize) {
+        if (indices.size() >= cacheSize) {
             Index<Key> lastIndex = indices.pollLast();
             map.remove(lastIndex.getKey());
         }

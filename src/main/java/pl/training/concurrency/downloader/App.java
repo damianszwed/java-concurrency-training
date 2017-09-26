@@ -15,7 +15,7 @@ public class App extends JFrame {
     private long bytes;
 
     public App() {
-        setBounds(0, 0, 320, 240);
+        setBounds(0, 0, 320, 60);
         setLayout(new FlowLayout());
         add(progressLabel);
         add(stopButton);

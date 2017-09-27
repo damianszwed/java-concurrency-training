@@ -1,16 +1,16 @@
-package pl.training.concurrency.mock;
+package pl.training.concurrency.ex019;
 
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
 
-public class Task implements Runnable, Comparable<Long>{
+public class TaskWithPhases implements Runnable, Comparable<Long>{
 
     private static final int TIMEOUT = 500;
 
     private long priority;
     private Phaser phaser;
 
-    public Task(long priority, Phaser phaser) {
+    public TaskWithPhases(long priority, Phaser phaser) {
         this.priority = priority;
         this.phaser = phaser;
     }

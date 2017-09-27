@@ -1,14 +1,15 @@
-package pl.training.concurrency.mock;
+package pl.training.concurrency;
 
 import org.junit.Before;
 import org.junit.Test;
+import pl.training.concurrency.ex019.TaskWithPhases;
 import pl.training.concurrency.utils.TestExecutor;
 import pl.training.concurrency.utils.TestPhaser;
 import pl.training.concurrency.utils.TestThreadFactory;
 
 import java.util.concurrent.*;
 
-public class TaskTest {
+public class TaskWithPhasesTest {
 
     private static final int PARTIES = 3;
 
@@ -20,7 +21,7 @@ public class TaskTest {
     public void init() {
         executor.setThreadFactory(new TestThreadFactory());
         for (int i = 1; i <= PARTIES; i++) {
-            executor.execute(new Task(i, phaser));
+            executor.execute(new TaskWithPhases(i, phaser));
         }
     }
 

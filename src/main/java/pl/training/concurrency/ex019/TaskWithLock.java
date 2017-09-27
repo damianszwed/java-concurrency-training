@@ -1,14 +1,14 @@
-package pl.training.concurrency.lock;
+package pl.training.concurrency.ex019;
 
 import java.util.concurrent.locks.Lock;
 
-public class Task implements Runnable {
+public class TaskWithLock implements Runnable {
 
     private static final int TIMEOUT = 500;
 
     private Lock lock;
 
-    public Task(Lock lock) {
+    public TaskWithLock(Lock lock) {
         this.lock = lock;
     }
 

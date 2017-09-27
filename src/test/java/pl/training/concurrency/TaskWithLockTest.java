@@ -1,17 +1,18 @@
-package pl.training.concurrency.lock;
+package pl.training.concurrency;
 
 import org.junit.Before;
 import org.junit.Test;
+import pl.training.concurrency.ex019.TaskWithLock;
 import pl.training.concurrency.utils.TestLock;
 
 import java.util.Collection;
 
-public class TaskTest {
+public class TaskWithLockTest {
 
     private static final int TIMEOUT = 1_000;
 
     private TestLock testLock = new TestLock();
-    private Task task = new Task(testLock);
+    private TaskWithLock task = new TaskWithLock(testLock);
 
     @Before
     public void init() {

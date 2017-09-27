@@ -1,8 +1,6 @@
 package pl.training.concurrency.downloader;
 
 import io.reactivex.Observable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 import java.io.IOException;

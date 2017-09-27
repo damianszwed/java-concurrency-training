@@ -1,4 +1,4 @@
-package pl.training.concurrency.ex015;
+package pl.training.concurrency.finder;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-public class SearchPhase {
+public class Finder {
 
-    public List<File> start(Path path, List<String> files, int numberOfThreads, int timeout) throws InterruptedException {
+    public List<File> find(Path path, List<String> files, int numberOfThreads, int timeout) throws InterruptedException {
         List<Search> tasks = files.stream()
                 .map(name -> new Search(path, name))
                 .collect(Collectors.toList());

@@ -1,15 +1,19 @@
 package pl.training.concurrency.ex015;
 
-import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class App {
 
-    public static void main(String[] args) throws InterruptedException {
-        SearchPhase searchFilesPhase = new SearchPhase();
-        searchFilesPhase.start(Paths.get("."), Arrays.asList("iml", "xml", "java"), 3, 5_000).stream()
-                .filter(file -> file.length() > 1024)
-                .forEach(file -> System.out.println(file.getAbsolutePath()));
+    public static void main(String[] args) {
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        CompletionService<String> completionService = new ExecutorCompletionService<>(executorService);
+        Printer printer = new Printer(completionService);
+        executorService.execute(printer);
+        completionService.submit(new ReportGenerator());
+        executorService.shutdown();
     }
 
 }

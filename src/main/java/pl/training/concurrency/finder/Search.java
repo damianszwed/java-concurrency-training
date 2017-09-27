@@ -1,4 +1,4 @@
-package pl.training.concurrency.ex015;
+package pl.training.concurrency.finder;
 
 import java.io.File;
 import java.nio.file.Path;

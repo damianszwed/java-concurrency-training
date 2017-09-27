@@ -1,7 +1,5 @@
 package pl.training.concurrency.ex012;
 
-import org.omg.CORBA.TIMEOUT;
-
 import java.util.concurrent.CyclicBarrier;
 
 public class App {

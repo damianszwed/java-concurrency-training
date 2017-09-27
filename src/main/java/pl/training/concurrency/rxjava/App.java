@@ -1,4 +1,4 @@
-package pl.training.concurrency.ex013;
+package pl.training.concurrency.rxjava;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;

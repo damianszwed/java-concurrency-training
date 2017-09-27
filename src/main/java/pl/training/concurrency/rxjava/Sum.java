@@ -1,4 +1,4 @@
-package pl.training.concurrency.ex013;
+package pl.training.concurrency.rxjava;
 
 import java.util.concurrent.Callable;
 

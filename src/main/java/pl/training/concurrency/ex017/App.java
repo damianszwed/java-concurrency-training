@@ -18,13 +18,12 @@ public class App {
         }
 
         ForkJoinPool forkJoinPool = new ForkJoinPool();
-        UpdatePriceTask updatePriceTask = new UpdatePriceTask(products, 50, 0, products.size() - 1, 10_000_000);
+        UpdatePriceTask updatePriceTask = new UpdatePriceTask(products, 50, 0, products.size() - 1, 500_000);
         System.out.println("Start...");
         long startTime = System.nanoTime();
         forkJoinPool.execute(updatePriceTask);
         updatePriceTask.get();
         System.out.println("Time: " + numberFormat.format(System.nanoTime() - startTime) + " ns");
-        forkJoinPool.shutdown();
     }
 
 }
